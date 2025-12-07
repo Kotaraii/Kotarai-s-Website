@@ -1,0 +1,101 @@
+:root{
+  --bg:#2b1026; /* pastel plum background */
+  --panel:#2a1226; /* panel background */
+  --muted:#d6c7d9; /* softer muted text */
+  --primary:#ffb3e6; /* soft pink */
+  --secondary:#ffd8f4; /* pale peach/pink */
+  --accent:#d6b3ff; /* soft lavender */
+}
+*{box-sizing:border-box}
+.crt-screen{position:relative;overflow:hidden;min-height:100vh}
+.scanlines, .vignette{pointer-events:none;position:absolute;inset:0}
+html,body{height:100%;min-height:100%;margin:0}
+/* ensure the background fills the whole page — avoid cutoff line */
+body{font-family:'Space Mono', monospace;background-color:var(--bg);background-image:radial-gradient(1200px 600px at 10% 10%, rgba(210,140,200,0.16), transparent 10%), linear-gradient(180deg,#16041a 0%,var(--bg) 100%);background-repeat:no-repeat;background-attachment:fixed;background-size:cover;color:#fff6ff;}
+.container{max-width:900px;margin:0 auto;padding:48px 20px}
+.header{text-align:center;margin-bottom:40px;position:relative;z-index:2}
+.init-line{font-family:VT323, monospace;color:var(--muted);font-size:14px;margin-bottom:18px}
+.init-line .caret{color:var(--primary);margin-right:6px}
+.init-line .ok{color:var(--secondary);margin-left:6px}
+.profile{display:flex;flex-direction:column;align-items:center;gap:18px}
+.profile-frame{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.08));padding:10px;border-radius:10px;box-shadow:0 10px 30px rgba(2,6,23,0.7), inset 0 1px 0 rgba(255,255,255,0.02)}
+.profile-screen{background:linear-gradient(180deg,rgba(255,255,255,0.015),rgba(0,0,0,0.16));padding:12px;border-radius:6px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.02)}
+.avatar{width:160px;height:160px;border-radius:6px;display:block;filter:contrast(1.05)}
+.title .name{font-family:VT323, monospace;font-size:44px;margin:6px 0;color:var(--primary);text-shadow:0 0 12px rgba(255,179,230,0.16),0 0 28px rgba(214,179,255,0.04)}
+.title .tag{font-size:13px;color:var(--muted);animation:blink 1.6s steps(2,end) infinite}
+@keyframes blink{50%{opacity:0.3}}
+
+.repos-title{display:flex;align-items:center;gap:12px;justify-content:center;margin:28px 0;position:relative}
+.repos-title .line{height:2px;background:linear-gradient(90deg,transparent,rgba(159,176,198,0.2));flex:1;max-width:140px}
+.repos-title h2{font-size:20px;color:var(--secondary);letter-spacing:2px;text-shadow:0 0 6px rgba(255,208,160,0.06)}
+
+.cards{display:flex;flex-direction:column;gap:12px}
+.card{display:block;padding:16px;background:linear-gradient(180deg,rgba(255,255,255,0.012),rgba(0,0,0,0.06));border-radius:10px;color:inherit;text-decoration:none;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.03);backdrop-filter: blur(4px)}
+.card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(2,6,23,0.6),0 8px 18px rgba(0,0,0,0.45)}
+.card-left{display:flex;gap:14px;align-items:flex-start}
+.icon{width:40px;height:40px;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.06));display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--primary);box-shadow:inset 0 -6px 10px rgba(0,0,0,0.35)}
+.card-body{flex:1;min-width:0}
+.card-head{display:flex;align-items:center;gap:10px}
+.card-head h3{margin:0;font-size:18px;color:#e9f8ff}
+.lang{font-size:12px;color:var(--muted);padding:4px 8px;border-radius:999px;background:linear-gradient(90deg,rgba(255,255,255,0.01),rgba(0,0,0,0.06))}
+.lang.ts{background:linear-gradient(90deg,#c7b9ff22,#8bd3ff22)}
+.lang.js{background:linear-gradient(90deg,#c7b9ff22,#8bd3ff22)}
+.desc{margin:8px 0 6px;color:var(--muted);font-size:13px}
+.stats{font-size:12px;color:var(--muted);display:flex;gap:12px}
+.card-right{position:absolute;right:12px;top:12px;color:var(--muted);opacity:0.95}
+.cmd{margin-top:10px;font-family:VT323, monospace;background:linear-gradient(90deg,rgba(255,255,255,0.012),rgba(0,0,0,0.06));padding:8px;border-radius:6px;font-size:13px;color:var(--muted);border:1px solid rgba(255,255,255,0.02)}
+
+/* copy feedback */
+.cmd{cursor:pointer}
+.copy-bubble{position:absolute;right:12px;bottom:calc(100% + 8px);background:var(--primary);color:#081018;padding:6px 8px;border-radius:6px;font-size:12px;opacity:0;transform:translateY(6px);transition:all .18s ease;z-index:60;box-shadow:0 6px 18px rgba(0,0,0,0.5)}
+.copy-bubble.show{opacity:1;transform:translateY(0)}
+
+.footer{margin-top:20px;text-align:center;padding-top:14px}
+.sep{height:1px;width:80%;margin:8px auto;background:linear-gradient(90deg,transparent,#33415544,transparent)}
+.sys{font-family:Space Mono, monospace;font-size:13px;color:var(--muted)}
+.note{font-size:12px;color:rgba(148,163,184,0.7)}
+
+.corner{position:fixed;bottom:14px;font-family:Space Mono,monospace;font-size:12px;color:rgba(148,163,184,0.6);z-index:70}
+.corner.left{left:14px}
+.corner.right{right:14px}
+
+/* Scanlines & vignette overlays */
+/* lighter pastel scanlines, placed behind content via z-index and subtle tint */
+.scanlines{background-image:repeating-linear-gradient(180deg, rgba(0,0,0,0.72) 0px, rgba(0,0,0,0.72) 1px, transparent 1px, transparent 4px), repeating-linear-gradient(180deg, rgba(10,20,30,0.06) 0px, rgba(10,20,30,0.06) 1px, transparent 1px, transparent 6px);opacity:0.98;mix-blend-mode:multiply;animation:scan 10s linear infinite;background-size:100% 5px, 100% 8px;z-index:5;pointer-events:none}
+@keyframes scan{0%{background-position-y:0}100%{background-position-y:48px}}
+.vignette{background:radial-gradient(60% 60% at 50% 20%, rgba(2,6,15,0.0), rgba(2,6,15,0.72)), linear-gradient(180deg, transparent, rgba(0,0,0,0.46));opacity:0.95;pointer-events:none;z-index:3}
+
+/* ensure content sits above scanlines */
+.container{position:relative;z-index:10}
+
+/* Subtle tiled terminal-text overlay (dulled white) placed above background but below scanlines */
+.terminal-noise{position:absolute;inset:0;pointer-events:none;z-index:4;opacity:1}
+.terminal-noise .tn-line{position:absolute;font-family:Space Mono,monospace;font-size:12px;color:rgba(255,255,255,0.22);white-space:nowrap;pointer-events:none;mix-blend-mode:screen}
+.terminal-noise .tn-line.faint{color:rgba(255,255,255,0.14)}
+.terminal-noise .tn-line.flicker{animation:flicker 3s linear infinite}
+@keyframes flicker{0%,100%{opacity:0.14}50%{opacity:0.32}}
+
+/* subtitle below profile */
+.subtitle{font-family:Space Mono, monospace;color:var(--muted);font-size:14px;margin-top:12px;letter-spacing:1px}
+
+/* ensure profile sits below scanlines while cards/links sit above */
+.profile-screen{position:relative}
+.avatar{position:relative;z-index:2}
+.scanlines-profile{position:absolute;inset:0;z-index:6;pointer-events:none;background-image:repeating-linear-gradient(180deg, rgba(0,0,0,0.72) 0px, rgba(0,0,0,0.72) 1px, transparent 1px, transparent 4px), repeating-linear-gradient(180deg, rgba(10,20,30,0.06) 0px, rgba(10,20,30,0.06) 1px, transparent 1px, transparent 6px);background-size:100% 5px, 100% 8px;mix-blend-mode:multiply;opacity:0.98}
+.card{position:relative;z-index:12}
+.card-link{display:block;color:inherit;text-decoration:none}
+.card-link:focus{outline:2px solid rgba(255,255,255,0.06);outline-offset:2px}
+
+/* subtle CRT chroma fringe on headings */
+.card-head h3{position:relative}
+.card-head h3::after{content:'';position:absolute;inset:0;left:1px;right:-1px;background:linear-gradient(90deg, rgba(201,167,255,0.06), rgba(139,211,255,0.06));mix-blend-mode:screen;filter:blur(6px);opacity:0.65}
+
+/* small screens */
+
+/* small screens */
+@media (max-width:600px){
+  .container{padding:28px 16px}
+  .title .name{font-size:36px}
+  .avatar{width:140px;height:140px}
+  .scanlines{opacity:0.18}
+}

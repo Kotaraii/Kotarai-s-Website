@@ -1,0 +1,18 @@
+# Static site artifacts
+node_modules/
+dist/
+.DS_Store
+*.log
+*.zip
+.env
+.vscode/
+npm-debug.log*
+package-lock.json
+yarn.lock
+
+# OS files
+Thumbs.db
+
+# Temporary
+*.tmp
+*.swp
