@@ -19,228 +19,175 @@
         <div class="profile">
           <div class="profile-frame">
             <div class="profile-screen">
-              <img src="assets/profile.png" alt="Profile" class="avatar" />
+              <img src="assets/profile.png" alt="Profile picture" class="avatar" />
+              <div class="scanlines-profile" aria-hidden="true"></div>
             </div>
           </div>
-          <script>
-            // Copy-to-clipboard and terminal-noise generator
-            (function(){
-              function makeCopyable(){
-                const cmds = document.querySelectorAll('.cmd');
-                cmds.forEach(cmd => {
-                  cmd.setAttribute('role','button');
-                  cmd.setAttribute('tabindex','0');
 
-                  async function handleCopyClick(e){
-                    if (e && e.preventDefault) { e.preventDefault(); e.stopPropagation(); }
-                    const text = cmd.innerText.replace(/^\$\s*/, '');
-                    try {
-                      await navigator.clipboard.writeText(text);
-                      const card = cmd.closest('.card') || cmd.parentElement;
-                      const bubble = document.createElement('div');
-                      bubble.className = 'copy-bubble';
-                      bubble.textContent = 'copied';
-                      const originalText = cmd.textContent;
-                      cmd.textContent = 'copied';
-                      if (card) card.appendChild(bubble);
-                      requestAnimationFrame(() => bubble.classList.add('show'));
-                      setTimeout(() => {
-                        bubble.classList.remove('show');
-                        setTimeout(() => bubble.remove(), 220);
-                      }, 1200);
-                      setTimeout(() => { cmd.textContent = originalText; }, 1200);
-                    } catch (err) {
-                      console.error('copy failed', err);
-                    }
-                  }
+          <div class="title">
+            <h1 class="name">Kotarai's Website</h1>
+            <p class="tag">loading repositories</p>
+          </div>
+        </div>
+        <p class="subtitle">Some of my favourite repositories</p>
+      </header>
 
-                  cmd.addEventListener('click', handleCopyClick);
-                  cmd.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCopyClick(); }
-                  });
-                });
-              }
-
-              function randChoice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-              function generateLines(){
-                const container = document.querySelector('.terminal-noise');
-                if(!container) return;
-                container.innerHTML = '';
-
-                const appleSpecs = [
-                  'CPU: MOS 6502 @ 1.023 MHz',
-                  'RAM: 4KB (expandable to 48KB/64KB)',
-                  'ROM: 12KB Monitor ROM',
-                  'VIDEO: NTSC 40x24 / HGR 280x192',
-                  'I/O: Disk II, Cassette, Paddle',
-                  'MODEL: Apple II (1977)'
-                ];
-
-                const fragments = [
-                  '▸ boot sequence ok',
-                  '▸ fsck: volume clean',
-                  '▸ listening on port 8080',
-                  '▸ mount /dev/disk2',
-                  '▸ fetch: github.com/kotarai/gems',
-                  '▸ ping: 64 bytes from 192.168.0.1',
-                  '▸ checksum 0x' + Math.floor(Math.random()*0xFFFFFF).toString(16),
-                  '▸ scanning memory banks',
-                  '▸ IRQ: 00FF',
-                  '▸ system idle: 0.7%'
-                ];
-
-                // Build a larger pool of lines for higher density
-                const lines = [];
-                for(let i=0;i<12;i++) lines.push(randChoice(appleSpecs));
-                for(let i=0;i<80;i++) lines.push(randChoice(fragments));
-
-                const W = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-                const H = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-
-                const placed = [];
-                const padding = 6;
-
-                lines.forEach((text) => {
-                  const el = document.createElement('div');
-                  el.className = 'tn-line ' + (Math.random()>0.7? 'faint':'' ) + (Math.random()>0.85? ' flicker':'');
-                  el.textContent = text;
-                  el.style.position = 'absolute';
-                  el.style.visibility = 'hidden';
-                  container.appendChild(el);
-
-                  // measure
-                  const rect = el.getBoundingClientRect();
-                  const elW = Math.min(rect.width, Math.max(80, W - 40));
-                  const elH = rect.height || 14;
-
-                  let placedOk = false;
-                  const maxAttempts = 40;
-                  for(let attempt=0; attempt<maxAttempts; attempt++){
-                    const x = Math.floor(Math.random()*(Math.max(0, W - elW)));
-                    const y = Math.floor(Math.random()*(Math.max(0, H - elH)));
-                    const cand = {left:x, top:y, right:x+elW, bottom:y+elH};
-                    let collide = false;
-                    for(const r of placed){
-                      if(!(cand.right + padding < r.left || cand.left > r.right + padding || cand.bottom + padding < r.top || cand.top > r.bottom + padding)){
-                        collide = true; break;
-                      }
-                    }
-                    if(!collide){
-                      el.style.left = x + 'px';
-                      el.style.top = y + 'px';
-                      el.style.visibility = 'visible';
-                      el.style.opacity = (0.14 + Math.random()*0.36).toString();
-                      if(Math.random()>0.95) el.style.transform = 'rotate(-0.5deg)';
-                      placed.push(cand);
-                      placedOk = true;
-                      break;
-                    }
-                  }
-
-                  if(!placedOk){
-                    // fallback: place without collision check
-                    const x = Math.floor(Math.random()*(Math.max(0, W - elW)));
-                    const y = Math.floor(Math.random()*(Math.max(0, H - elH)));
-                    el.style.left = x + 'px';
-                    el.style.top = y + 'px';
-                    el.style.visibility = 'visible';
-                    el.style.opacity = (0.14 + Math.random()*0.36).toString();
-                    placed.push({left:x, top:y, right:x+elW, bottom:y+elH});
-                  }
-                });
-              }
-
-              function initAll(){ makeCopyable(); generateLines(); }
-
-              if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAll);
-              else initAll();
-
-              window.addEventListener('resize', () => {
-                clearTimeout(window._tn_timeout);
-                window._tn_timeout = setTimeout(generateLines, 250);
-              });
-            })();
-          </script>
-
+      <section class="repos">
         <div class="repos-title">
           <div class="line"></div>
-          <h2>SOME OF MY FAVOURITE REPOSITORIES</h2>
+          <h2>REPOSITORIES</h2>
           <div class="line"></div>
         </div>
 
         <div class="cards">
-          <a class="card card-link" href="https://github.com/facebook/react" target="_blank" rel="noopener noreferrer">
-            <div class="card-left">
-              <div class="icon">R</div>
-              <div class="card-body">
-                <div class="card-head"><h3>React</h3><div class="lang js">JavaScript</div></div>
-                <div class="desc">The library for web and native user interfaces. Build component-based UIs.</div>
-                <div class="stats">★ 230,000 • forks 47,000</div>
-                <div class="cmd">$ git clone git@github.com:facebook/react.git</div>
+          <div class="card">
+            <a class="card-link" href="https://github.com/facebook/react" target="_blank" rel="noopener noreferrer">
+              <div class="card-left">
+                <div class="icon">🐙</div>
+                <div class="card-body">
+                  <div class="card-head">
+                    <h3>React</h3>
+                    <span class="lang js">JavaScript</span>
+                  </div>
+                  <p class="desc">The library for web and native user interfaces. Build component-based UIs.</p>
+                  <div class="stats"><span>⭐ 230000</span><span>🍴 47000</span></div>
+                </div>
               </div>
-            </div>
-          </a>
+              <div class="card-right">↗</div>
+            </a>
+            <div class="cmd">$ git clone https://github.com/facebook/react</div>
+          </div>
 
-          <a class="card card-link" href="https://github.com/tailwindlabs/tailwindcss" target="_blank" rel="noopener noreferrer">
-            <div class="card-left">
-              <div class="icon">T</div>
-              <div class="card-body">
-                <div class="card-head"><h3>Tailwind CSS</h3><div class="lang ts">TypeScript</div></div>
-                <div class="desc">A utility-first CSS framework for rapid UI development.</div>
-                <div class="stats">★ 84,000 • forks 4,200</div>
-                <div class="cmd">$ git clone git@github.com:tailwindlabs/tailwindcss.git</div>
+          <div class="card">
+            <a class="card-link" href="https://github.com/tailwindlabs/tailwindcss" target="_blank" rel="noopener noreferrer">
+              <div class="card-left">
+                <div class="icon">🎨</div>
+                <div class="card-body">
+                  <div class="card-head">
+                    <h3>Tailwind CSS</h3>
+                    <span class="lang ts">TypeScript</span>
+                  </div>
+                  <p class="desc">A utility-first CSS framework for rapid UI development.</p>
+                  <div class="stats"><span>⭐ 84000</span><span>🍴 4200</span></div>
+                </div>
               </div>
-            </div>
-          </a>
+              <div class="card-right">↗</div>
+            </a>
+            <div class="cmd">$ git clone https://github.com/tailwindlabs/tailwindcss</div>
+          </div>
 
-          <a class="card card-link" href="https://github.com/vitejs/vite" target="_blank" rel="noopener noreferrer">
-            <div class="card-left">
-              <div class="icon">V</div>
-              <div class="card-body">
-                <div class="card-head"><h3>Vite</h3><div class="lang ts">TypeScript</div></div>
-                <div class="desc">Next generation frontend tooling. It's fast!</div>
-                <div class="stats">★ 70,000 • forks 6,300</div>
-                <div class="cmd">$ git clone git@github.com:vitejs/vite.git</div>
+          <div class="card">
+            <a class="card-link" href="https://github.com/vitejs/vite" target="_blank" rel="noopener noreferrer">
+              <div class="card-left">
+                <div class="icon">⚡</div>
+                <div class="card-body">
+                  <div class="card-head">
+                    <h3>Vite</h3>
+                    <span class="lang ts">TypeScript</span>
+                  </div>
+                  <p class="desc">Next generation frontend tooling. It's fast!</p>
+                  <div class="stats"><span>⭐ 70000</span><span>🍴 6300</span></div>
+                </div>
               </div>
-            </div>
-          </a>
+              <div class="card-right">↗</div>
+            </a>
+            <div class="cmd">$ git clone https://github.com/vitejs/vite</div>
+          </div>
 
-          <a class="card card-link" href="https://github.com/shadcn-ui/ui" target="_blank" rel="noopener noreferrer">
-            <div class="card-left">
-              <div class="icon">S</div>
-              <div class="card-body">
-                <div class="card-head"><h3>shadcn/ui</h3><div class="lang ts">TypeScript</div></div>
-                <div class="desc">Beautifully designed components built with Radix UI and Tailwind CSS.</div>
-                <div class="stats">★ 76,000 • forks 4,800</div>
-                <div class="cmd">$ git clone git@github.com:shadcn-ui/ui.git</div>
+          <div class="card">
+            <a class="card-link" href="https://github.com/shadcn-ui/ui" target="_blank" rel="noopener noreferrer">
+              <div class="card-left">
+                <div class="icon">🧩</div>
+                <div class="card-body">
+                  <div class="card-head">
+                    <h3>shadcn/ui</h3>
+                    <span class="lang ts">TypeScript</span>
+                  </div>
+                  <p class="desc">Beautifully designed components built with Radix UI and Tailwind CSS.</p>
+                  <div class="stats"><span>⭐ 76000</span><span>🍴 4800</span></div>
+                </div>
               </div>
-            </div>
-          </a>
+              <div class="card-right">↗</div>
+            </a>
+            <div class="cmd">$ git clone https://github.com/shadcn-ui/ui</div>
+          </div>
 
-          <a class="card card-link" href="https://github.com/lucide-icons/lucide" target="_blank" rel="noopener noreferrer">
-            <div class="card-left">
-              <div class="icon">L</div>
-              <div class="card-body">
-                <div class="card-head"><h3>Lucide</h3><div class="lang ts">TypeScript</div></div>
-                <div class="desc">Beautiful & consistent icon toolkit made by the community.</div>
-                <div class="stats">★ 12,000 • forks 550</div>
-                <div class="cmd">$ git clone git@github.com:lucide-icons/lucide.git</div>
+          <div class="card">
+            <a class="card-link" href="https://github.com/lucide-icons/lucide" target="_blank" rel="noopener noreferrer">
+              <div class="card-left">
+                <div class="icon">🔣</div>
+                <div class="card-body">
+                  <div class="card-head">
+                    <h3>Lucide Icons</h3>
+                    <span class="lang ts">TypeScript</span>
+                  </div>
+                  <p class="desc">Beautiful & consistent icon toolkit made by the community.</p>
+                  <div class="stats"><span>⭐ 12000</span><span>🍴 550</span></div>
+                </div>
               </div>
-            </div>
-          </a>
+              <div class="card-right">↗</div>
+            </a>
+            <div class="cmd">$ git clone https://github.com/lucide-icons/lucide</div>
+          </div>
+
         </div>
-
-        </header>
 
         <footer class="footer">
           <div class="sep"></div>
           <p class="sys">&gt; SYSTEM ONLINE • EST. 2025</p>
-          <p class="note">[BUILT WITH CAFFEINE, NICOTINE, HATE AND AI SLAVE LABOUR]</p>
+          <p class="note">[BUILT WITH CAFFEINE, NICOTINE AND HATE]</p>
         </footer>
+      </section>
     </main>
 
     <div class="corner left">v1.0.0</div>
     <div class="corner right">RAM: 128K</div>
   </div>
-  </body>
+    <script>
+      // Enable click-to-copy for the terminal-style git commands
+      (function(){
+        function makeCopyable(){
+          const cmds = document.querySelectorAll('.cmd');
+          cmds.forEach(cmd => {
+            cmd.setAttribute('role','button');
+            cmd.setAttribute('tabindex','0');
+            cmd.addEventListener('click', async () => {
+              const text = cmd.innerText.replace(/^\$\s*/,'');
+              try {
+                await navigator.clipboard.writeText(text);
+                const card = cmd.closest('.card') || cmd.parentElement;
+                const bubble = document.createElement('div');
+                bubble.className = 'copy-bubble';
+                bubble.textContent = 'copied';
+                // briefly replace the command text with an inline acknowledgement
+                const originalText = cmd.textContent;
+                cmd.textContent = 'copied';
+                if (card) card.appendChild(bubble);
+                // show animation
+                requestAnimationFrame(() => bubble.classList.add('show'));
+                setTimeout(() => {
+                  bubble.classList.remove('show');
+                  setTimeout(() => bubble.remove(), 220);
+                }, 1200);
+                // restore original command text after a short delay
+                setTimeout(() => {
+                  cmd.textContent = originalText;
+                }, 1200);
+              } catch (e) {
+                console.error('copy failed', e);
+              }
+            });
+            cmd.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                cmd.click();
+              }
+            });
+          });
+        }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', makeCopyable);
+        else makeCopyable();
+      })();
+    </script>
+</body>
 </html>

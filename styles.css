@@ -69,11 +69,7 @@ body{font-family:'Space Mono', monospace;background-color:var(--bg);background-i
 .container{position:relative;z-index:10}
 
 /* Subtle tiled terminal-text overlay (dulled white) placed above background but below scanlines */
-.terminal-noise{position:absolute;inset:0;pointer-events:none;z-index:4;opacity:1}
-.terminal-noise .tn-line{position:absolute;font-family:Space Mono,monospace;font-size:12px;color:rgba(255,255,255,0.22);white-space:nowrap;pointer-events:none;mix-blend-mode:screen}
-.terminal-noise .tn-line.faint{color:rgba(255,255,255,0.14)}
-.terminal-noise .tn-line.flicker{animation:flicker 3s linear infinite}
-@keyframes flicker{0%,100%{opacity:0.14}50%{opacity:0.32}}
+.terminal-noise{position:absolute;inset:0;pointer-events:none;z-index:4;background-repeat:repeat;opacity:0.28;mix-blend-mode:screen;background-size:600px 120px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='120'><style>text{font-family:Space Mono,monospace;font-size:12px;fill:rgba(255,255,255,0.16)}</style><text x='8' y='16'>▸ 0f3a:b1nary checksum ok</text><text x='8' y='34'>▸ loading modules: network ui render</text><text x='8' y='52'>▸ fetch: github.com/kotarai/repo</text><text x='8' y='70'>▸ RAM: 128K | CPU: 0.98GHz</text><text x='8' y='88'>▸ /usr/local/bin: update complete</text></svg>");}
 
 /* subtitle below profile */
 .subtitle{font-family:Space Mono, monospace;color:var(--muted);font-size:14px;margin-top:12px;letter-spacing:1px}
