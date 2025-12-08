@@ -42,13 +42,18 @@ body{font-family:'Space Mono', monospace;background-color:var(--bg);background-i
 .lang.js{background:linear-gradient(90deg,#c7b9ff22,#8bd3ff22)}
 .desc{margin:8px 0 6px;color:var(--muted);font-size:13px}
 .stats{font-size:12px;color:var(--muted);display:flex;gap:12px}
+/* loading / error states for repo stats */
+.stats .loading{color:var(--secondary);font-style:italic;opacity:0.95}
+.stats.loading{opacity:0.95}
+.stats.error{color:#ff9b9b;opacity:0.95}
+.stats.error span{opacity:0.95}
 .card-right{position:absolute;right:12px;top:12px;color:var(--muted);opacity:0.95}
-.cmd{margin-top:10px;font-family:VT323, monospace;background:linear-gradient(90deg,rgba(255,255,255,0.012),rgba(0,0,0,0.06));padding:8px;border-radius:6px;font-size:13px;color:var(--muted);border:1px solid rgba(255,255,255,0.02)}
+.cmd{margin-top:10px;position:relative;font-family:VT323, monospace;background:linear-gradient(90deg,rgba(255,255,255,0.012),rgba(0,0,0,0.06));padding:8px;border-radius:6px;font-size:13px;color:var(--muted);border:1px solid rgba(255,255,255,0.02);text-align: center}
 
 /* copy feedback */
 .cmd{cursor:pointer}
-.copy-bubble{position:absolute;right:12px;bottom:calc(100% + 8px);background:var(--primary);color:#081018;padding:6px 8px;border-radius:6px;font-size:12px;opacity:0;transform:translateY(6px);transition:all .18s ease;z-index:60;box-shadow:0 6px 18px rgba(0,0,0,0.5)}
-.copy-bubble.show{opacity:1;transform:translateY(0)}
+.copy-bubble{position:absolute;left:50%;bottom:calc(100% + 8px);background:var(--primary);color:#081018;padding:6px 8px;border-radius:6px;font-size:12px;opacity:0;transform:translateX(-50%) translateY(6px);transition:all .18s ease;z-index:60;box-shadow:0 6px 18px rgba(0,0,0,0.5)}
+.copy-bubble.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 .footer{margin-top:20px;text-align:center;padding-top:14px}
 .sep{height:1px;width:80%;margin:8px auto;background:linear-gradient(90deg,transparent,#33415544,transparent)}

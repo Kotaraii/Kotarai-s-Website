@@ -3,7 +3,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Kotarai's personal website showcasing favorite repositories and projects" />
+  <meta name="keywords" content="Kotarai, portfolio, repositories, GitHub, web development, programming" />
+  <meta name="author" content="Kotarai" />
+  <meta property="og:title" content="Kotarai's Website" />
+  <meta property="og:description" content="Personal website showcasing favorite repositories and projects" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/profile.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Kotarai's Website" />
+  <meta name="twitter:description" content="Personal website showcasing favorite repositories and projects" />
+  <meta name="twitter:image" content="assets/profile.png" />
   <title>Kotarai's Website</title>
+  <link rel="icon" type="image/png" href="assets/profile.png" />
+  <link rel="shortcut icon" href="assets/profile.png" />
   <link rel="stylesheet" href="styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
 </head>
@@ -162,6 +175,7 @@
   </div>
     <script>
       // Enable click-to-copy for the terminal-style git commands
+      // Also: fetch live GitHub stars & forks for each card and update the UI
       (function(){
         function makeCopyable(){
           const cmds = document.querySelectorAll('.cmd');
@@ -169,26 +183,19 @@
             cmd.setAttribute('role','button');
             cmd.setAttribute('tabindex','0');
             cmd.addEventListener('click', async () => {
-              const text = cmd.innerText.replace(/^\$\s*/,'');
+              const text = cmd.innerText.replace(/^\$\s*/, '');
               try {
                 await navigator.clipboard.writeText(text);
                 const card = cmd.closest('.card') || cmd.parentElement;
                 const bubble = document.createElement('div');
                 bubble.className = 'copy-bubble';
                 bubble.textContent = 'copied';
-                // briefly replace the command text with an inline acknowledgement
-                const originalText = cmd.textContent;
-                cmd.textContent = 'copied';
-                if (card) card.appendChild(bubble);
+                cmd.appendChild(bubble);
                 // show animation
                 requestAnimationFrame(() => bubble.classList.add('show'));
                 setTimeout(() => {
                   bubble.classList.remove('show');
                   setTimeout(() => bubble.remove(), 220);
-                }, 1200);
-                // restore original command text after a short delay
-                setTimeout(() => {
-                  cmd.textContent = originalText;
                 }, 1200);
               } catch (e) {
                 console.error('copy failed', e);
@@ -202,8 +209,50 @@
             });
           });
         }
-        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', makeCopyable);
-        else makeCopyable();
+
+        async function updateRepoStats(){
+          const cards = Array.from(document.querySelectorAll('.card'));
+          for (const card of cards){
+            const link = card.querySelector('.card-link');
+            if (!link) continue;
+            // try to parse owner/repo from the href
+            const m = link.href.match(/github\.com\/([^\/]+)\/([^\/]+)(?:\/|$)/i);
+            if (!m) continue;
+            const owner = m[1];
+            let repo = m[2] || '';
+            repo = repo.replace(/\.git$/,'');
+            const statsEl = card.querySelector('.stats');
+            if (!statsEl) continue;
+
+            // show a transient loading state
+            statsEl.classList.remove('error');
+            statsEl.classList.add('loading');
+            statsEl.innerHTML = `<span class="loading">...</span>`;
+
+            try {
+              const res = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
+              if (!res.ok) {
+                throw new Error('HTTP ' + res.status);
+              }
+              const data = await res.json();
+              const stars = typeof data.stargazers_count === 'number' ? data.stargazers_count : '—';
+              const forks = typeof data.forks_count === 'number' ? data.forks_count : '—';
+              statsEl.innerHTML = `<span>⭐ ${stars}</span><span>🍴 ${forks}</span>`;
+              statsEl.classList.remove('loading');
+            } catch (err){
+              // graceful fallback: show em-dash and mark error state
+              statsEl.innerHTML = `<span>⭐ —</span><span>🍴 —</span>`;
+              statsEl.classList.remove('loading');
+              statsEl.classList.add('error');
+              console.error('Failed to fetch GitHub stats for', owner + '/' + repo, err);
+            }
+            // small delay between requests to reduce chance of hitting rate limits
+            await new Promise(r => setTimeout(r, 300));
+          }
+        }
+
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { makeCopyable(); updateRepoStats(); });
+        else { makeCopyable(); updateRepoStats(); }
       })();
     </script>
 </body>
