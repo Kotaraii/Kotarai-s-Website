@@ -52,7 +52,7 @@ body{font-family:'Space Mono', monospace;background-color:var(--bg);background-i
 
 /* copy feedback */
 .cmd{cursor:pointer}
-.copy-bubble{position:absolute;left:50%;bottom:calc(100% + 8px);background:var(--primary);color:#081018;padding:6px 8px;border-radius:6px;font-size:12px;opacity:0;transform:translateX(-50%) translateY(6px);transition:all .18s ease;z-index:60;box-shadow:0 6px 18px rgba(0,0,0,0.5)}
+.copy-bubble{position:absolute;left:50%;bottom:calc(100% + 8px);background:var(--primary);color:#081018;padding:6px 8px;border-radius:6px;font-size:12px;opacity:0;transform:translateX(-50%) translateY(8px);transition:all .18s ease;z-index:60;box-shadow:0 6px 18px rgba(0,0,0,0.5)}
 .copy-bubble.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 .footer{margin-top:20px;text-align:center;padding-top:14px}
